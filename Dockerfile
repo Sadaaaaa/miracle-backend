@@ -1,21 +1,15 @@
-# back
-# устанавливаем самую лёгкую версию JVM
-FROM openjdk:11
+#
+# Build stage
+#
+FROM maven:3.6.0-jdk-11-slim AS build
+COPY src /home/app/src
+COPY pom.xml /home/app
+RUN mvn -f /home/app/pom.xml clean package
 
-# указываем ярлык. Например, разработчика образа и проч. Необязательный пункт.
-LABEL maintainer="sadopwnz@yandex.ru"
-
-# указываем точку монтирования для внешних данных внутри контейнера (как мы помним, это Линукс)
-VOLUME /tmp
-
-# внешний порт, по которому наше приложение будет доступно извне
-EXPOSE 8090
-
-# указываем, где в нашем приложении лежит джарник
-ARG JAR_FILE=target/miracle-0.0.1-SNAPSHOT.jar
-
-# добавляем джарник в образ под именем miracle-backend.jar
-ADD ${JAR_FILE} miracle-backend.jar
-
-# команда запуска джарника
-ENTRYPOINT ["java","-jar","/miracle-backend.jar"]
+#
+# Package stage
+#
+FROM openjdk:11-jre-slim
+COPY --from=build /home/app/target/miracle-0.0.1-SNAPSHOT.jar /usr/local/lib/miracle.jar
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","/usr/local/lib/miracle.jar"]

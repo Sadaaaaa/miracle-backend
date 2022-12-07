@@ -2,7 +2,7 @@ version: '3.8'
 services:
   backend:
     build: ./
-    image: miracle/miracle-backend
+    image: miracle-backend
     container_name: miracle-backend
     ports:
       - "8090:8090"
@@ -25,13 +25,13 @@ services:
 
 
   frontend:
-    image: miracle-frontend:latest
-    container_name: miracle-frontend/miracle-frontend
+    image: miracle-frontend
+    container_name: miracle-frontend
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../../miracle-app
+#      dockerfile: ../../miracle-app/Dockerfile
     volumes:
-      - '.:/app'
+      - ../../miracle-app:/app
       - '/app/node_modules'
     ports:
       - '3000:3000'

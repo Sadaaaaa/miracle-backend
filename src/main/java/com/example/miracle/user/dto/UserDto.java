@@ -1,5 +1,6 @@
 package com.example.miracle.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-    private Long id;
+    @JsonProperty("id")
+    private Integer id;
+    @JsonProperty("username")
     private String username;
+    @JsonProperty("email")
     private String email;
+    @JsonProperty("password")
+    private String password;
 }
