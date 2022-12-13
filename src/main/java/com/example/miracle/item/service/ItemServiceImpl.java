@@ -1,6 +1,7 @@
 package com.example.miracle.item.service;
 
 import com.example.miracle.exception.NotFoundException;
+import com.example.miracle.image.dao.ImageItemRepository;
 import com.example.miracle.image.model.ImageItem;
 import com.example.miracle.image.model.ImageMapper;
 import com.example.miracle.item.dao.ItemRepository;
@@ -25,10 +26,12 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
+    private final ImageItemRepository imageItemRepository;
 
     @Autowired
-    public ItemServiceImpl(ItemRepository itemRepository) {
+    public ItemServiceImpl(ItemRepository itemRepository, ImageItemRepository imageItemRepository) {
         this.itemRepository = itemRepository;
+        this.imageItemRepository = imageItemRepository;
     }
 
     @Override
@@ -77,12 +80,20 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Page<ItemDto> getAllItems(Integer from, Integer size) {
         Page<Item> items = itemRepository.findAll(PageRequest.of(from / size, size));
+//        items.forEach(i -> i.setImageItem(imageItemRepository.findAllByItem_Id(i.getId())));
         return items.map(ItemMapper::toItemDto);
     }
 
     @Override
     public Page<ItemDto> searchItems(String text, Integer from, Integer size) {
         Page<Item> items = itemRepository.searchItem(text, PageRequest.of(from / size, size));
+//        items.forEach(i -> i.setImageItem(imageItemRepository.findAllByItem_Id(i.getId())));
+        return items.map(ItemMapper::toItemDto);
+    }
+
+    @Override
+    public Page<ItemDto> findAllItemsByUserId(Integer userId, Integer from, Integer size) {
+        Page<Item> items = itemRepository.findItemsByOwner_Id(userId, PageRequest.of(from / size, size));
         return items.map(ItemMapper::toItemDto);
     }
 }

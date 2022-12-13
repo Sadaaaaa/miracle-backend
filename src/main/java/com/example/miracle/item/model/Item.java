@@ -30,6 +30,9 @@ public class Item {
     @Column(name = "posted")
     private LocalDateTime posted;
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
-//    @JoinTable(name = "Images_items")
-    private List<ImageItem> imageItem;
+//    @JoinColumn(name = "item_id", referencedColumnName = "id")
+//    @JoinTable(name = "images_items",
+//            joinColumns = @JoinColumn(name = "id"),
+//            inverseJoinColumns = @JoinColumn(name = "item_id"))
+    private List<ImageItem> imageItems;
 }

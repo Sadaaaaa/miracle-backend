@@ -44,11 +44,12 @@ public class ImageController {
     @GetMapping("/image/user/{userId}")
     public ResponseEntity<?> getImageByUserId(@PathVariable Integer userId) {
         Image image = imageRepository.findByUser_Id(userId);
-        return ResponseEntity.ok()
-                .header("fileName", image.getFilename())
-                .contentType(MediaType.valueOf(image.getContentType()))
-                .contentLength(image.getSize())
-                .body(new InputStreamResource(new ByteArrayInputStream(image.getBytes())));
+        return ResponseEntity.ok(image);
+//        return ResponseEntity.ok()
+//                .header("fileName", image.getFilename())
+//                .contentType(MediaType.valueOf(image.getContentType()))
+//                .contentLength(image.getSize())
+//                .body(new InputStreamResource(new ByteArrayInputStream(image.getBytes())));
     }
 
     @GetMapping("/image/item/{id}")

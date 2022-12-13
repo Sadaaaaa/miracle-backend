@@ -19,6 +19,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -41,13 +42,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .csrf().disable()
-                .cors(withDefaults())
+                .cors().and()
                 .authorizeRequests()
                 .antMatchers("/admin").hasRole("ADMIN")
-                .antMatchers("/login", "/registration", "/logout", "/error", "/user", "/loginNew", "/token").permitAll()
+                .antMatchers("/login", "/registration", "/logout", "/item", "/items", "/user", "/loginNew", "/token").permitAll()
                 .anyRequest().hasAnyRole("USER", "ADMIN")
                 .and()
-                .formLogin().loginPage("http://localhost:3000/").defaultSuccessUrl("/", true)
+                .formLogin().loginPage("http://178.20.41.50:3000/").defaultSuccessUrl("/", true)
                 .and()
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/").permitAll()
                 .and()
@@ -62,9 +63,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:8090"));
+//        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:8090", "http://178.20.41.50"));
+        configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "DELETE"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

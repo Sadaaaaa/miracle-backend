@@ -31,7 +31,7 @@ public class ImageItem {
     @Type(type = "org.hibernate.type.ImageType")
     @Column(name = "bytes")
     private byte[] bytes;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
     @JsonIgnore
     private Item item;

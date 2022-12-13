@@ -15,4 +15,7 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
             " where (lower(i.title) like lower(concat('%', :text, '%')) " +
             " or lower(i.description) like lower(concat('%', :text, '%'))) ")
     Page<Item> searchItem(@Param("text") String text, Pageable pageable);
+
+//    Page<Item> findItemsByOwnerId(Integer userId, Pageable pageable);
+    Page<Item> findItemsByOwner_Id(Integer userId, Pageable pageable);
 }

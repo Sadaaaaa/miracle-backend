@@ -23,7 +23,8 @@ public class ItemMapper {
                 item.getDescription(),
                 item.getPrice(),
                 item.getOwner(),
-                item.getPosted()
+                item.getPosted(),
+                item.getImageItems()
         );
     }
 }

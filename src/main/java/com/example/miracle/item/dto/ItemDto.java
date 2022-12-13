@@ -1,11 +1,13 @@
 package com.example.miracle.item.dto;
 
+import com.example.miracle.image.model.ImageItem;
 import com.example.miracle.user.dto.UserDto;
 import com.example.miracle.user.model.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -23,4 +25,6 @@ public class ItemDto {
     private User owner;
     @JsonProperty("posted")
     private LocalDateTime posted;
+    @JsonProperty("imageItems")
+    private List<ImageItem> imageItems;
 }

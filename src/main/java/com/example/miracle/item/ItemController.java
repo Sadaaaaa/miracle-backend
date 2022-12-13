@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*")
 public class ItemController {
 
     private final ItemService itemService;
@@ -57,5 +57,12 @@ public class ItemController {
                                          @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
                                          @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
         return ResponseEntity.ok(itemService.searchItems(text, from, size));
+    }
+
+    @GetMapping("/items/user/{userId}")
+    public ResponseEntity<?> findAllItemsByUserId(@PathVariable Integer userId,
+                                         @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
+                                         @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+        return ResponseEntity.ok(itemService.findAllItemsByUserId(userId, from, size));
     }
 }

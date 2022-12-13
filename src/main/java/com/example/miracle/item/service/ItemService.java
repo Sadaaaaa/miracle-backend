@@ -19,4 +19,6 @@ public interface ItemService {
     Page<ItemDto> getAllItems(Integer from, Integer size);
 
     Page<ItemDto> searchItems(String text, Integer from, Integer size);
+
+    Page<ItemDto> findAllItemsByUserId(Integer userId, Integer from, Integer size);
 }

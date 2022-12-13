@@ -40,6 +40,6 @@ public class ImageMapper {
 
     public static void linkImageToItem(List<ImageItem> imageItems, Item item) {
         imageItems.forEach(i -> i.setItem(item));
-        item.setImageItem(imageItems);
+        item.setImageItems(imageItems);
     }
 }

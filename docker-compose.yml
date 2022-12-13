@@ -1,6 +1,7 @@
 version: '3.8'
 services:
   backend:
+    platform: linux/amd64
     build: ./
     image: miracle-backend
     container_name: miracle-backend
@@ -9,11 +10,10 @@ services:
     depends_on:
       - db
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_NAME=miracle_service
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/compose-postgres
+      - SPRING_DATASOURCE_USERNAME=compose-postgres
+      - SPRING_DATASOURCE_PASSWORD=compose-postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
   db:
     image: postgres:14.5-alpine
@@ -21,15 +21,17 @@ services:
     ports:
       - "5433:5432"
     environment:
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=compose-postgres
+      - POSTGRES_PASSWORD=compose-postgres
 
 
   frontend:
+    platform: linux/amd64
     image: miracle-frontend
     container_name: miracle-frontend
     build:
       context: ../../miracle-app
-#      dockerfile: ../../miracle-app/Dockerfile
+    #      dockerfile: ../../miracle-app/Dockerfile
     volumes:
       - ../../miracle-app:/app
       - '/app/node_modules'
@@ -50,8 +52,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
-#    depends_on:
-#      - frontend
+    #    depends_on:
+    #      - frontend
     networks:
       - app-network
 

@@ -11,6 +11,7 @@ import com.example.miracle.user.model.User;
 import io.jsonwebtoken.Claims;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -19,12 +20,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
 public class AuthService {
 
     private final Map<String, String> refreshStorage = new HashMap<>();
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
+
+    @Autowired
+    public AuthService(JwtProvider jwtProvider, UserRepository userRepository) {
+        this.jwtProvider = jwtProvider;
+        this.userRepository = userRepository;
+    }
 
     public JwtResponse login(@NonNull JwtRequest authRequest) {
         final User user = userRepository.findByEmail(authRequest.getUsername())

@@ -1,7 +1,6 @@
 package com.example.miracle.auth.jwt;
 
 import com.example.miracle.auth.model.JwtAuthentication;
-import com.example.miracle.auth.service.PersonDetailsService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,8 +19,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JWTFilter extends GenericFilterBean /*OncePerRequestFilter*/ {
 
-    private final JWTUtil jwtUtil;
-    private final PersonDetailsService personDetailsService;
     private static final String AUTHORIZATION = "Authorization";
     private final JwtProvider jwtProvider;
 
