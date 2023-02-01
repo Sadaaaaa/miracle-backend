@@ -22,7 +22,7 @@ public class ItemController {
     }
 
     @PostMapping("/item")
-    public ResponseEntity<?> postItem(@RequestParam(value = "files") MultipartFile[] files,
+    public ResponseEntity<?> postItem(@RequestParam(value = "files", required = false) MultipartFile[] files,
                                       @RequestParam(value = "item") String itemDto) throws IOException {
 
         ObjectMapper objectMapper = new ObjectMapper();

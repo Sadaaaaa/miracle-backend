@@ -19,4 +19,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> search(@Param("text") String text, Pageable pageable);
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByActivationCode(String code);
 }

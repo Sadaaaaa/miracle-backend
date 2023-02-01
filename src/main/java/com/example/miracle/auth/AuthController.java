@@ -1,65 +1,65 @@
 package com.example.miracle.auth;
 
-import com.example.miracle.auth.model.JwtRequest;
-import com.example.miracle.auth.model.JwtResponse;
-import com.example.miracle.auth.model.PersonDetails;
-import com.example.miracle.auth.model.RefreshJwtRequest;
-import com.example.miracle.auth.service.AuthService;
+import com.example.miracle.auth.dto.AuthenticationDto;
+import com.example.miracle.auth.jwt.JwtUtil;
+import com.example.miracle.auth.model.UserValidator;
+import com.example.miracle.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
-//@CrossOrigin(origins = "*", allowCredentials = "true")
-@CrossOrigin(origins = "*")
+import java.util.Map;
+
 @RestController
 public class AuthController {
 
-    private final AuthService authService;
+    private final UserValidator userValidator;
+    private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+    private final UserService userService;
 
     @Autowired
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
-
-    @GetMapping("/showUserInfo")
-    @ResponseBody
-    public String showUserInfo() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
-        System.out.println(personDetails.getPerson());
-
-        return personDetails.getUsername();
+    public AuthController(UserValidator userValidator,
+                          JwtUtil jwtUtil, AuthenticationManager authenticationManager, UserService userService) {
+        this.userValidator = userValidator;
+        this.jwtUtil = jwtUtil;
+        this.authenticationManager = authenticationManager;
+        this.userService = userService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest authRequest) {
-        JwtResponse token = authService.login(authRequest);
+    public Map<String, String> performLogin(@RequestBody AuthenticationDto authenticationDto) {
+        UsernamePasswordAuthenticationToken authInputToken =
+                new UsernamePasswordAuthenticationToken(authenticationDto.getUsername(),
+                        authenticationDto.getPassword());
 
-        return ResponseEntity.ok(token);
+        try {
+            authenticationManager.authenticate(authInputToken);
+        } catch (BadCredentialsException e) {
+            return Map.of("message", "Incorrect credentials!");
+        }
+
+        String token = jwtUtil.generateToken(authenticationDto.getUsername());
+        return Map.of("jwt", token);
     }
 
-    @PostMapping("/token")
-    public ResponseEntity<JwtResponse> getNewAccessToken(@RequestBody RefreshJwtRequest request) {
-        final JwtResponse token = authService.getAccessToken(request.getRefreshToken());
-
-        return ResponseEntity.ok(token);
-    }
-
-    @PostMapping("/refresh")
-    public ResponseEntity<JwtResponse> getNewRefreshToken(@RequestBody RefreshJwtRequest request) {
-        final JwtResponse token = authService.refresh(request.getRefreshToken());
-
-        return ResponseEntity.ok(token);
+    @GetMapping("/activate/{code}")
+    public ResponseEntity<?> activate(@PathVariable String code) {
+        return ResponseEntity.ok(userService.activateUser(code));
     }
 
     @GetMapping("/")
     public RedirectView localRedirect() {
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("http://178.20.41.50:3000/");
-
+        redirectView.setUrl("http://localhost:3000");
         return redirectView;
     }
 }

@@ -12,7 +12,7 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 
 @Component
-public class JWTUtil {
+public class JwtUtil {
 
     @Value("${jwt_secret}")
     private String secret;
@@ -24,7 +24,7 @@ public class JWTUtil {
                 .withSubject("User details")
                 .withClaim("username", username)
                 .withIssuedAt(new Date())
-                .withIssuer("miracle-app")
+                .withIssuer("alishev")
                 .withExpiresAt(expirationDate)
                 .sign(Algorithm.HMAC256(secret));
     }
@@ -32,11 +32,10 @@ public class JWTUtil {
     public String validateTokenAndRetrieveClaim(String token) throws JWTVerificationException {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secret))
                 .withSubject("User details")
-                .withIssuer("miracle-app")
+                .withIssuer("alishev")
                 .build();
 
         DecodedJWT jwt = verifier.verify(token);
         return jwt.getClaim("username").asString();
     }
-
 }

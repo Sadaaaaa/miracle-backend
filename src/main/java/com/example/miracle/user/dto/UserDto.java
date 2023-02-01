@@ -17,4 +17,8 @@ public class UserDto {
     private String email;
     @JsonProperty("password")
     private String password;
+    @JsonProperty("path")
+    private String path;
+    @JsonProperty("is_enabled")
+    private boolean isEnabled;
 }

@@ -42,4 +42,35 @@ public class ImageMapper {
         imageItems.forEach(i -> i.setItem(item));
         item.setImageItems(imageItems);
     }
+
+
+    public static UserImage toUserImage(MultipartFile file, String path) throws IOException {
+        return new UserImage(
+                null,
+                file.getOriginalFilename(),
+                file.getSize(),
+                file.getContentType(),
+                path,
+                null);
+    }
+
+    public static void linkUserImageToUser(UserImage userImage, User user) {
+        userImage.setUser(user);
+        user.setUserImage(userImage);
+    }
+
+    public static ItemImage toItemImage(MultipartFile file, String path) {
+        return new ItemImage(
+                null,
+                file.getOriginalFilename(),
+                file.getSize(),
+                file.getContentType(),
+                path,
+                null);
+    }
+
+//    public static void linkItemImageToItem(List<ItemImage> itemImages, Item item) {
+//        itemImages.forEach(i -> i.setItem(item));
+//        item.setItemImages(itemImages);
+//    }
 }

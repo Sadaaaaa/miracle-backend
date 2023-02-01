@@ -1,8 +1,8 @@
 package com.example.miracle.item.service;
 
+import com.example.miracle.image.model.ItemImage;
 import com.example.miracle.item.dto.ItemDto;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,4 +21,6 @@ public interface ItemService {
     Page<ItemDto> searchItems(String text, Integer from, Integer size);
 
     Page<ItemDto> findAllItemsByUserId(Integer userId, Integer from, Integer size);
+
+    ItemImage saveFile(MultipartFile file) throws IOException;
 }

@@ -1,9 +1,12 @@
 package com.example.miracle.user.service;
 
+import com.example.miracle.image.model.UserImage;
 import com.example.miracle.user.dto.UserDto;
+import com.example.miracle.user.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
@@ -19,4 +22,8 @@ public interface UserService {
     void deleteUser(Integer userId);
 
     List<UserDto> search(String text, Integer from, Integer size);
+
+    UserImage saveFile(MultipartFile file) throws IOException;
+
+    UserDto activateUser(String code);
 }

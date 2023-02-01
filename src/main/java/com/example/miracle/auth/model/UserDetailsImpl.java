@@ -8,16 +8,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-public class PersonDetails implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
     private final User user;
 
-    public PersonDetails(User user) {
+    public UserDetailsImpl(User user) {
         this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(String.valueOf(user.getRole())));
+        // SHOW_ACCOUNT, WITHDRAW_MONEY, SEND_MONEY
+        // ROLE_ADMIN, ROLE_USER - это роли
+        return Collections.singletonList(new SimpleGrantedAuthority(user.getRole().toString()));
     }
 
     @Override
@@ -27,7 +29,7 @@ public class PersonDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.user.getEmail();
+        return this.user.getUsername();
     }
 
     @Override
@@ -50,8 +52,7 @@ public class PersonDetails implements UserDetails {
         return true;
     }
 
-    // Нужно, чтобы получать данные аутентифицированного пользователя
-    public User getPerson() {
+    public User getUser() {
         return this.user;
     }
 }

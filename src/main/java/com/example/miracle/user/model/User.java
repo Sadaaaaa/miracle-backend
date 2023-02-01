@@ -1,6 +1,7 @@
 package com.example.miracle.user.model;
 
 import com.example.miracle.image.model.Image;
+import com.example.miracle.image.model.UserImage;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,8 +33,13 @@ public class User {
     private Role role;
     @Column(name = "password", length = 1000)
     private String password;
-    @Column(name = "active")
-    private boolean active;
+    @JoinColumn(name = "user_image")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private UserImage userImage;
+    @Column(name = "is_enabled")
+    private boolean isEnabled;
+    @Column(name = "activation_code")
+    private String activationCode;
 
     @JsonCreator
     public User(Integer id) {
