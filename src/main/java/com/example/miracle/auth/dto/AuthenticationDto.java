@@ -4,8 +4,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 public class AuthenticationDto {
-    @NotEmpty(message = "Имя не должно быть пустым")
-    @Size(min = 2, max = 100, message = "Имя должно быть от 2 до 100 символов длиной")
+    @NotEmpty(message = "Username should not be empty.")
+    @Size(min = 2, max = 100, message = "Username should be from 2 to 100 symbols.")
     private String username;
 
     private String password;

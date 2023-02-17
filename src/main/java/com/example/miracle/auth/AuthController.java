@@ -59,7 +59,8 @@ public class AuthController {
     @GetMapping("/")
     public RedirectView localRedirect() {
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("http://localhost:3000");
+//        redirectView.setUrl("http://localhost:3000");
+        redirectView.setUrl("http://178.20.41.50");
         return redirectView;
     }
 }
