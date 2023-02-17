@@ -3,6 +3,7 @@ package com.example.miracle.auth.config;
 import com.example.miracle.auth.jwt.JwtFilter;
 import com.example.miracle.auth.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -22,6 +23,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final JwtFilter jwtFilter;
+
+    @Value("${api.url}")
+    private String apiUrl;
 
     @Autowired
     public SecurityConfig(UserDetailsServiceImpl userDetailsServiceImpl, JwtFilter jwtFilter) {
@@ -46,8 +50,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login", "/registration", "/error", "/", "/items/**", "/activate/**").permitAll()
                 .anyRequest().hasAnyRole("USER", "ADMIN")
                 .and()
-//                .formLogin().loginPage("http://localhost:3000/").defaultSuccessUrl("/", true)
-                .formLogin().loginPage("http://178.20.41.50/").defaultSuccessUrl("/", true)
+                .formLogin().loginPage(apiUrl).defaultSuccessUrl("/", true)
+//                .formLogin().loginPage("http://178.20.41.50/").defaultSuccessUrl("/", true)
                 .and()
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/").permitAll()
                 .and()

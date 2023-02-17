@@ -2,9 +2,9 @@ package com.example.miracle.auth;
 
 import com.example.miracle.auth.dto.AuthenticationDto;
 import com.example.miracle.auth.jwt.JwtUtil;
-import com.example.miracle.auth.model.UserValidator;
 import com.example.miracle.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,15 +21,15 @@ import java.util.Map;
 @RestController
 public class AuthController {
 
-    private final UserValidator userValidator;
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
 
+    @Value("${api.url}")
+    private String apiUrl;
+
     @Autowired
-    public AuthController(UserValidator userValidator,
-                          JwtUtil jwtUtil, AuthenticationManager authenticationManager, UserService userService) {
-        this.userValidator = userValidator;
+    public AuthController(JwtUtil jwtUtil, AuthenticationManager authenticationManager, UserService userService) {
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
         this.userService = userService;
@@ -59,8 +59,7 @@ public class AuthController {
     @GetMapping("/")
     public RedirectView localRedirect() {
         RedirectView redirectView = new RedirectView();
-//        redirectView.setUrl("http://localhost:3000");
-        redirectView.setUrl("http://178.20.41.50");
+        redirectView.setUrl(apiUrl);
         return redirectView;
     }
 }
