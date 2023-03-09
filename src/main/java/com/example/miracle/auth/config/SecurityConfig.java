@@ -96,7 +96,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     // Turn off some endpoints from spring security filters
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/items/**", "/login", "/registration", "/activate/**");
     }
 }
