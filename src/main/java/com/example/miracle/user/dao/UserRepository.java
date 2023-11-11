@@ -1,7 +1,6 @@
 package com.example.miracle.user.dao;
 
 import com.example.miracle.user.model.User;
-import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +20,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByEmail(String email);
 
     Optional<User> findByActivationCode(String code);
+
+    Optional<User> findByLogin(String login);
 }

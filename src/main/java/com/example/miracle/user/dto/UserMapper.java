@@ -4,15 +4,12 @@ import com.example.miracle.user.model.User;
 
 public class UserMapper {
     public static User fromUserDto(UserDto userDto) {
-        return new User(userDto.getId(),
-                userDto.getUsername(),
-                userDto.getEmail(),
-                null,
-                null,
-                userDto.getPassword(),
-                null,
-                false,
-                null);
+        return User.builder()
+                .id(userDto.getId())
+                .username(userDto.getUsername())
+                .email(userDto.getEmail())
+                .password(userDto.getPassword())
+                .build();
     }
 
     public static UserDto toUserDto(User user) {

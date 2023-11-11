@@ -6,9 +6,9 @@ import com.example.miracle.user.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
     UserDto createUser(UserDto userDto, MultipartFile file) throws IOException;
@@ -26,4 +26,7 @@ public interface UserService {
     UserImage saveFile(MultipartFile file) throws IOException;
 
     UserDto activateUser(String code);
+
+    Optional<User> getByLogin(String login);
+    Optional<User> getByEmail(String email);
 }

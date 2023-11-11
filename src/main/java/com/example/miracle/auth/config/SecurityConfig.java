@@ -1,40 +1,66 @@
 package com.example.miracle.auth.config;
 
-import com.example.miracle.auth.jwt.JwtFilter;
+import com.example.miracle.auth.entity.JwtFilter;
 import com.example.miracle.auth.service.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
-    private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final JwtFilter jwtFilter;
-
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
     @Value("${api.url}")
     private String apiUrl;
 
-    @Autowired
-    public SecurityConfig(UserDetailsServiceImpl userDetailsServiceImpl, JwtFilter jwtFilter) {
-        this.userDetailsServiceImpl = userDetailsServiceImpl;
-        this.jwtFilter = jwtFilter;
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http
+                .httpBasic().disable()
+                .csrf().disable()
+                .cors()
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+                .and()
+                .authorizeHttpRequests(
+                        auth -> auth
+                                .antMatchers("/login", "/registration", "/error", "/", "/items/**", "/activate/**").permitAll()
+                                .antMatchers("/api/auth/login", "/api/auth/token", "/user").permitAll()
+                                .anyRequest().authenticated()
+                                .and()
+                                .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                ).build();
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+
+//
+//    private final UserDetailsServiceImpl userDetailsServiceImpl;
+//    private final JwtFilter jwtFilter;
+//
+//    @Value("${api.url}")
+//    private String apiUrl;
+//
+//    @Autowired
+//    public SecurityConfig(UserDetailsServiceImpl userDetailsServiceImpl, JwtFilter jwtFilter) {
+//        this.userDetailsServiceImpl = userDetailsServiceImpl;
+//        this.jwtFilter = jwtFilter;
+//    }
+//
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
 //        CorsConfiguration corsConfiguration = new CorsConfiguration();
 //        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
 //        corsConfiguration.setAllowedOrigins(List.of("*"));
@@ -42,41 +68,41 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        corsConfiguration.setAllowCredentials(true);
 //        corsConfiguration.setExposedHeaders(List.of("Authorization"));
 
-        http
-                .csrf().disable()
-                .cors().and()
-                .authorizeRequests()
-                .antMatchers("/admin").hasRole("ADMIN")
-                .antMatchers("/login", "/registration", "/error", "/", "/items/**", "/activate/**").permitAll()
-                .anyRequest().hasAnyRole("USER", "ADMIN")
-                .and()
-                .formLogin().loginPage(apiUrl).defaultSuccessUrl("/", true)
+//        http
+//                .csrf().disable()
+//                .cors().and()
+//                .authorizeRequests()
+//                .antMatchers("/admin").hasRole("ADMIN")
+//                .antMatchers("/login", "/registration", "/error", "/", "/items/**", "/activate/**").permitAll()
+//                .anyRequest().hasAnyRole("USER", "ADMIN")
+//                .and()
+//                .formLogin().loginPage(apiUrl).defaultSuccessUrl("/", true)
 //                .formLogin().loginPage("http://178.20.41.50/").defaultSuccessUrl("/", true)
-                .and()
-                .logout().logoutUrl("/logout").logoutSuccessUrl("/").permitAll()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//                .and()
+//                .logout().logoutUrl("/logout").logoutSuccessUrl("/").permitAll()
+//                .and()
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//
+//        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+//    }
 
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-    }
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.userDetailsService(userDetailsServiceImpl)
+//                .passwordEncoder(getPasswordEncoder());
+//    }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsServiceImpl)
-                .passwordEncoder(getPasswordEncoder());
-    }
-
-    @Bean
-    public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+//    @Bean
+//    public PasswordEncoder getPasswordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
+//
+//    @Bean
+//    @Override
+//    public AuthenticationManager authenticationManagerBean() throws Exception {
+//        return super.authenticationManagerBean();
+//    }
 
 //    @Bean
 //    CorsConfigurationSource corsConfigurationSource() {
@@ -95,8 +121,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //    }
 
     // Turn off some endpoints from spring security filters
-    @Override
-    public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/items/**", "/login", "/registration", "/activate/**");
-    }
+//    @Override
+//    public void configure(WebSecurity web) {
+//        web.ignoring().antMatchers("/items/**", "/login", "/registration", "/activate/**");
+//    }
 }
