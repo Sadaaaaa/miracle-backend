@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+        JAVA_HOME = tool 'JDK 11'
         DOCKER_COMPOSE_FILE = 'docker-compose.yml'
         REMOTE_SERVER_IP = '192.168.88.82'
     }
