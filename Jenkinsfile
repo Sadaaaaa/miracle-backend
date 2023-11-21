@@ -5,6 +5,7 @@ pipeline {
         JAVA_HOME = tool 'JDK 11'
         DOCKER_COMPOSE_FILE = 'docker-compose.yml'
         REMOTE_SERVER_IP = '192.168.88.82'
+        REMOTE_SERVER_USERNAME = 'serg'
     }
 
     stages {
@@ -45,7 +46,7 @@ pipeline {
                 script {
                     // Передача архива на удаленный сервер
                     sshagent(['your-ssh-credentials-id']) {
-                        sh "scp miracle-app.tar ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP}:/path/to/remote/directory/"
+                        sh "scp miracle-app.tar ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP}:/home/serg"
                     }
                 }
             }
@@ -56,7 +57,7 @@ pipeline {
                 script {
                     // Заходим на удаленный сервер и разворачиваем контейнер с использованием Docker Compose
                     sshagent(['your-ssh-credentials-id']) {
-                        sh "ssh ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP} 'cd /path/to/remote/directory/ && docker load -i miracle-app.tar && docker-compose -f ${DOCKER_COMPOSE_FILE} up -d'"
+                        sh "ssh ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP} 'cd /home/serg && docker load -i miracle-app.tar && docker-compose -f ${DOCKER_COMPOSE_FILE} up -d'"
                     }
                 }
             }
