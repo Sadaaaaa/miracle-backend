@@ -2,11 +2,8 @@ pipeline {
     agent any
 
     environment {
-        MAVEN_HOME = tool 'Maven'
         DOCKER_COMPOSE_FILE = 'docker-compose.yml'
         REMOTE_SERVER_IP = '192.168.88.82'
-        REMOTE_SERVER_USERNAME = 'your_remote_username'
-        REMOTE_SERVER_PASSWORD = 'your_remote_password'
     }
 
     stages {
@@ -18,7 +15,9 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh "${MAVEN_HOME}/bin/mvn clean install"
+                script {
+                    sh 'mvn -B -DskipTests clean package'
+                }
             }
         }
 
@@ -26,7 +25,7 @@ pipeline {
             steps {
                 script {
                     // Создание Docker-образа
-                    sh "docker build -t miracle-app ."
+                    sh "docker build -t miracle-backend ."
                 }
             }
         }
@@ -35,7 +34,7 @@ pipeline {
             steps {
                 script {
                     // Сохранение Docker-образа как архива
-                    sh "docker save -o miracle-app.tar miracle-app"
+                    sh "docker save -o miracle-backend.tar miracle-backend"
                 }
             }
         }
