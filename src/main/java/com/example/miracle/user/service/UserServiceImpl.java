@@ -3,6 +3,7 @@ package com.example.miracle.user.service;
 import com.example.miracle.email.ConfirmationTokenRepository;
 import com.example.miracle.email.EmailSenderService;
 import com.example.miracle.email.MailSender;
+import com.example.miracle.exception.ConflictException;
 import com.example.miracle.exception.NotFoundException;
 import com.example.miracle.image.dao.UserImageRepository;
 import com.example.miracle.image.model.Image;
@@ -11,14 +12,12 @@ import com.example.miracle.image.model.UserImage;
 import com.example.miracle.user.dao.UserRepository;
 import com.example.miracle.user.dto.UserDto;
 import com.example.miracle.user.dto.UserMapper;
-import com.example.miracle.user.model.Role;
 import com.example.miracle.user.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     @Value("${upload.path}")
     private String uploadPath;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+//    private final PasswordEncoder passwordEncoder;
     private final UserImageRepository userImageRepository;
     private final ConfirmationTokenRepository confirmationTokenRepository;
     private final EmailSenderService emailSenderService;
@@ -51,11 +51,11 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
-                           PasswordEncoder passwordEncoder, UserImageRepository userImageRepository,
+                           UserImageRepository userImageRepository,
                            ConfirmationTokenRepository confirmationTokenRepository,
                            EmailSenderService emailSenderService, MailSender mailSender) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+//        this.passwordEncoder = passwordEncoder;
         this.userImageRepository = userImageRepository;
         this.confirmationTokenRepository = confirmationTokenRepository;
         this.emailSenderService = emailSenderService;
@@ -66,8 +66,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto userDto, MultipartFile file) throws IOException {
         User user = UserMapper.fromUserDto(userDto);
-        user.setRole(Role.ROLE_USER);
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+//        user.setRoles(Role.ROLE_USER);
+//        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setPassword(userDto.getPassword());
+
+
 
         if (file != null) {
             Image image = ImageMapper.toImageUser(file);
@@ -78,8 +81,12 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setActivationCode(UUID.randomUUID().toString());
-        User savedUser = userRepository.save(user);
-
+        User savedUser;
+        try {
+            savedUser = userRepository.save(user);
+        } catch (RuntimeException exception) {
+            throw new ConflictException("User with this email " + userDto.getEmail()  + " already exist");
+        }
         if (!StringUtils.isEmpty(user.getEmail())) {
             String message = String.format(
                     "<p>Hello, %s! \n" + "Welcome to Miracle. Please, visit next link:</p> <br> " +
@@ -176,5 +183,15 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         return UserMapper.toUserDto(user);
+    }
+
+    @Override
+    public Optional<User> getByLogin(String login) {
+        return userRepository.findByLogin(login);
+    }
+
+    @Override
+    public Optional<User> getByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
