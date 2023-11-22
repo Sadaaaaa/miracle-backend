@@ -1,3 +1,5 @@
+#!groovy
+
 pipeline {
     agent any
 
@@ -47,7 +49,7 @@ pipeline {
                 script {
                     // Передача архива на удаленный сервер
                     sshagent(['your-ssh-credentials-id']) {
-                        sh "scp miracle-backend.tar ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP}:/home/serg"
+                        sh "scp miracle-backend.tar docker-compose.yml ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP}:/home/serg"
                     }
                 }
             }
