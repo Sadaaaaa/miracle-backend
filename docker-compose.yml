@@ -30,8 +30,8 @@ services:
     platform: linux/amd64
     image: miracle-frontend
     container_name: miracle-frontend
-    build:
-      context: ../../miracle-app
+#    build:
+#      context: ../../miracle-app
     #      dockerfile: ../../miracle-app/Dockerfile
     volumes:
       - ../../miracle-app:/app
