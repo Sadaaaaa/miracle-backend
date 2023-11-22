@@ -60,7 +60,7 @@ pipeline {
                 script {
                     // Заходим на удаленный сервер и разворачиваем контейнер с использованием Docker Compose
                     sshagent(['your-ssh-credentials-id']) {
-                        sh "ssh ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP} 'cd /home/serg && docker load -i miracle-backend.tar && docker-compose -f ${DOCKER_COMPOSE_FILE} up -d'"
+                        sh "ssh ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP} 'cd /home/serg && docker load -i miracle-backend.tar && docker-compose -f ${DOCKER_COMPOSE_FILE} up -d backend'"
                     }
                 }
             }
