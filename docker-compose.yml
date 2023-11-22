@@ -11,7 +11,7 @@ services:
 #    depends_on:
 #      - db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://192.168.88.81:5432/miracle-service
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://192.168.88.81:5432/miracle_service
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
