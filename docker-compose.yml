@@ -25,65 +25,22 @@ services:
 #      - POSTGRES_USER=compose-postgres
 #      - POSTGRES_PASSWORD=compose-postgres
 
-
-#  frontend:
-#    platform: linux/amd64
-#    image: miracle-frontend
-#    container_name: miracle-frontend
-#    build:
-#      context: ../../miracle-app
-#      dockerfile: ../../miracle-app/Dockerfile
-#    volumes:
-#      - ../../miracle-app:/app
-#      - '/app/node_modules'
-#    ports:
-#      - '3000:3000'
-#    environment:
-#      - NODE_ENV=development
-
   frontend:
     platform: linux/amd64
     container_name: miracle-frontend
     build:
-      context: .
+      context: ./frontend
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    # Связываем локальную директорию с директорией /app внутри контейнера
     volumes:
-      - ./src:/app/src
-    # Переменная окружения для указания режима работы (production, development и т.д.)
+      - ./frontend/src:/app/src
     environment:
       - NODE_ENV=development
-    # Опции для автоматической перезагрузки приложения при изменении файлов
     command: npm run start
-
-  #Nginx Service
-#  nginx:
-#    image: nginx:alpine
-#    container_name: nginx
-#    restart: unless-stopped
-#    tty: true
-#    volumes:
-#      - ./nginx.conf:/etc/nginx/nginx.conf
-#    ports:
-#      - "80:80"
-#      - "443:443"
-#    #    depends_on:
-#    #      - frontend
-#    networks:
-#      - app-network
 
 #Docker Networks
 networks:
   app-network:
     driver: bridge
-
-#  miracle-app-frontend:
-#    image: miracle-app-frontend:latest
-#    environment:
-#      PORT: 3000
-#      PROXY_API: http://localhost:8080/
-#    ports:
-#        - "3000:3000"
 
