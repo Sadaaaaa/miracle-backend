@@ -99,6 +99,10 @@ pipeline {
                         sh "ssh ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP} 'rm -rf /home/serg/backend && git clone https://github.com/Sadaaaaa/miracle-backend.git /home/serg/backend'"
                     }
 
+                    sshagent([REMOTE_SERVER_SSH_CREDENTIALS]) {
+                        sh "scp docker-compose.yml ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP}:/home/serg"
+                    }
+
                     // Сборка и развертывание Docker на удаленном сервере
                     sshagent([REMOTE_SERVER_SSH_CREDENTIALS]) {
                         sh "ssh ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP} 'docker-compose up -d'"
