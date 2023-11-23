@@ -13,13 +13,13 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry
-                .addMapping("/**")
-                .allowedOrigins("http://localhost:3000", "http://localhost:8090", apiUrl)
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:3000", "http://localhost:8090", "http://sadopwnz.duckdns.org", apiUrl)
 //                .allowedOrigins("http://localhost:3000", "http://localhost:8090", "http://178.20.41.50")
 //                .allowedOriginPatterns("*")
                 .allowedHeaders("*")
                 .allowedMethods("GET", "POST", "OPTIONS", "DELETE")
-                .allowCredentials(false);
+                .allowCredentials(true)
+                .maxAge(3600);
     }
 }
