@@ -33,7 +33,6 @@ public class SecurityConfig {
                 .cors()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
                 .and()
                 .authorizeHttpRequests(
                         auth -> auth
