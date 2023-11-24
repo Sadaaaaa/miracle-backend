@@ -88,24 +88,57 @@ pipeline {
         REMOTE_SERVER_USERNAME = 'serg'
         JENKINS_HOME = '/var/lib/jenkins/workspace/'
         REMOTE_SERVER_SSH_CREDENTIALS = 'your-ssh-credentials-id'  // Идентификатор учетных данных для SSH-ключа
+        DOCKER_IMAGE_TAG = 'miracle-backend:latest'
     }
 
+//    stages {
+//        stage('Build and Deploy on Remote Server') {
+//            steps {
+//                script {
+//                    // Клонирование репозитория на удаленном сервере
+//                    sshagent([REMOTE_SERVER_SSH_CREDENTIALS]) {
+//                        sh "ssh ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP} 'rm -rf /home/serg/backend && git clone https://github.com/Sadaaaaa/miracle-backend.git /home/serg/backend'"
+//                    }
+//
+//                    sshagent([REMOTE_SERVER_SSH_CREDENTIALS]) {
+//                        sh "scp docker-compose.yml ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP}:/home/serg"
+//                    }
+//
+//                    // Сборка и развертывание Docker на удаленном сервере
+//                    sshagent([REMOTE_SERVER_SSH_CREDENTIALS]) {
+//                        sh "ssh ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP} 'docker-compose up --build -d'"
+//                    }
+//                }
+//            }
+//        }
+//    }
+
     stages {
-        stage('Build and Deploy on Remote Server') {
+        stage('Get project from the Github') {
             steps {
                 script {
-                    // Клонирование репозитория на удаленном сервере
-                    sshagent([REMOTE_SERVER_SSH_CREDENTIALS]) {
-                        sh "ssh ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP} 'rm -rf /home/serg/backend && git clone https://github.com/Sadaaaaa/miracle-backend.git /home/serg/backend'"
-                    }
+                    sh "ssh ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP} 'rm -rf /home/serg/backend && git clone https://github.com/Sadaaaaa/miracle-backend.git /home/serg/backend'"
+                }
+            }
+        }
 
+        stage('Build the new docker image') {
+            steps {
+                script {
                     sshagent([REMOTE_SERVER_SSH_CREDENTIALS]) {
-                        sh "scp docker-compose.yml ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP}:/home/serg"
+                        // Сборка Docker-образа
+                        sh "ssh ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP} 'docker-compose stop && cd /home/serg/backend && docker build -t ${DOCKER_IMAGE_TAG} .'"
                     }
+                }
+            }
+        }
 
+        stage('Start docker-compose service') {
+            steps {
+                script {
                     // Сборка и развертывание Docker на удаленном сервере
                     sshagent([REMOTE_SERVER_SSH_CREDENTIALS]) {
-                        sh "ssh ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP} 'docker-compose up -d'"
+                        sh "ssh ${REMOTE_SERVER_USERNAME}@${REMOTE_SERVER_IP} 'docker-compose stop && docker-compose up -d'"
                     }
                 }
             }

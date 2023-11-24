@@ -2,7 +2,7 @@ version: '3.8'
 services:
   backend:
     platform: linux/amd64
-    build: ./
+    build: ./backend
     image: miracle-backend
     container_name: miracle-backend
     ports:
@@ -27,6 +27,7 @@ services:
 
   frontend:
     platform: linux/amd64
+    image: miracle-frontend
     container_name: miracle-frontend
     build:
       context: ./frontend
