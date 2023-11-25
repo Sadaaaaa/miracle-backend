@@ -8,22 +8,28 @@ services:
     ports:
       - "8090:8090"
       - "465:465"
-#    depends_on:
-#      - db
+    depends_on:
+      - db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://192.168.88.81:5432/miracle_service
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/miracle_service
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    networks:
+      - app-network
 
-#  db:
-#    image: postgres:14.5-alpine
-#    container_name: miracle_db
-#    ports:
-#      - "5433:5432"
-#    environment:
-#      - POSTGRES_USER=compose-postgres
-#      - POSTGRES_PASSWORD=compose-postgres
+  db:
+    image: postgres:14.5-alpine
+    container_name: miracle_db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=miracle_service
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    networks:
+      - app-network
 
   frontend:
     platform: linux/amd64
@@ -39,9 +45,10 @@ services:
     environment:
       - NODE_ENV=development
     command: npm run start
+    networks:
+      - app-network
 
 #Docker Networks
-#networks:
-#  app-network:
-#    driver: bridge
-
+networks:
+  app-network:
+    driver: bridge
