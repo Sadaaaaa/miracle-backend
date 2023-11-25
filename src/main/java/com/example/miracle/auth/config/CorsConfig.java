@@ -15,10 +15,15 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/")
-                .allowedOrigins("http://localhost:3000", "http://localhost:8090", "http://sadopwnz.duckdns.com", "http://192.168.88.26")
-                .allowedMethods("GET", "POST", "OPTIONS", "DELETE", "PUT")
-                .allowedHeaders("*")
-                .allowCredentials(true);
+//        registry.addMapping("/")
+//                .allowedOrigins("http://localhost:3000", "http://localhost:8090", "http://sadopwnz.duckdns.com", "http://192.168.88.26")
+//                .allowedMethods("GET", "POST", "OPTIONS", "DELETE", "PUT")
+//                .allowedHeaders("*")
+//                .allowCredentials(true);
+        registry.addMapping("/**")
+                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE")
+                .allowedOrigins("*")
+                .allowedHeaders("*");
+
     }
 }
