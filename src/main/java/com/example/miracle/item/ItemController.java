@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-//@CrossOrigin(origins = "*")
 public class ItemController {
 
     private final ItemService itemService;
