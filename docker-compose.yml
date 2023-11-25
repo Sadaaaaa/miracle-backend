@@ -41,7 +41,7 @@ services:
     command: npm run start
 
 #Docker Networks
-networks:
-  app-network:
-    driver: bridge
+#networks:
+#  app-network:
+#    driver: bridge
 
